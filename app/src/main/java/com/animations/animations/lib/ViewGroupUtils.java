@@ -4,6 +4,8 @@ package com.animations.animations.lib;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.animations.animations.lib.view.ParticleView;
+
 
 /**
  * Class Utils to manage View to add, replace and remove
@@ -64,4 +66,17 @@ public class ViewGroupUtils {
         parent.addView(newView);
     }
 
+    /**
+     * Test if parent has view
+     * @param parent
+     * @param view
+     * @return
+     */
+    public static boolean hasView(ViewGroup parent, View view) {
+        if(parent == null) {
+            return false;
+        }
+
+        return parent.indexOfChild(view) != -1;
+    }
 }

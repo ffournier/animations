@@ -4,6 +4,9 @@ import com.animations.animations.lib.Tools;
 import com.animations.animations.lib.particle.Particle;
 
 
+/**
+ * Default initializer
+ */
 public class DefaultInitializer implements DecoratorInitializer {
 
     @Override

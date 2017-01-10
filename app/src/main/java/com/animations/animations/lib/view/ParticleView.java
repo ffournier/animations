@@ -29,9 +29,12 @@ import com.animations.animations.lib.decorator.DefaultInitializer;
 import com.animations.animations.lib.particle.Particle;
 
 
-
+/**
+ * Define the View to draws the animations
+ */
 public class ParticleView extends View implements ValueAnimator.AnimatorUpdateListener {
 
+    // declaration static
     private static final int EMIT_DURATION = 12; /* ms per particles */
     private static final int MAX_PARTICLES = 1;
     private static final int DEFAULT_DURATION = 1000; /* ms */
@@ -45,6 +48,7 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
 
 
 
+    // declaration
     private final ArrayList<Particle> mParticleCache = new ArrayList<>();
     private final ArrayList<Particle> mParticles = new ArrayList<>();
 
@@ -73,24 +77,45 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
 
     private Timer mTimer;
 
+    // decorator
     private List<DecoratorInitializer> mInitializer = new ArrayList<>();
     private List<DecoratorBehavior> mBehavior = new ArrayList<>();
 
+    /**
+     * Constructor
+     * @param context
+     */
     public ParticleView(Context context) {
         super(context);
         init(null, 0);
     }
 
+    /**
+     * Constructor
+     * @param context
+     * @param attrs
+     */
     public ParticleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
     }
 
+    /**
+     * Constructor
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
     public ParticleView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
     }
 
+    /**
+     * init
+     * @param attrs
+     * @param defStyle
+     */
     private void init(AttributeSet attrs, int defStyle) {
         mDuration = DEFAULT_DURATION;
         mMinScale = DEFAULT_SCALE_MIN;
@@ -113,32 +138,63 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
 
     }
 
+    /**
+     * Setter Distance
+     * @param distance
+     */
     public void setDistance(int distance) {
         mDistance = distance;
     }
 
+    /**
+     * Setter Minimum Scale
+     * @param minScale
+     */
     public void setMinScale(float minScale) {
         mMinScale = minScale;
     }
 
+    /**
+     * Setter Maximum Scale
+     * @param maxScale
+     */
     public void setMaxScale(float maxScale) {
         mMaxScale = maxScale;
     }
 
+    /**
+     * Setter Center
+     * @param x
+     * @param y
+     */
     public void setCenter(int x, int y) {
         mCenterX = x;
         mCenterY = y;
     }
 
+    /**
+     * Setter Particle Standard Size
+     * @param particleStandardSize
+     */
     public void setParticleStandardSize(int particleStandardSize) {
         mParticleStandardSize = particleStandardSize;
     }
 
+    /**
+     * Setter Velocity
+     * @param velocityX
+     * @param velocityY
+     */
     public void setVelocity(int velocityX, int velocityY) {
         mVelocityX = velocityX;
         mVelocityY = velocityY;
     }
 
+    /**
+     * Add Drawable
+     * @param drawable
+     * @param count
+     */
     public void addDrawable(Drawable drawable, int count) {
         int newCount = count;
         Integer currentCount = mCountPerDrawable.get(drawable);
@@ -149,6 +205,9 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         mCountPerDrawable.put(drawable, newCount);
     }
 
+    /**
+     * Start One Shot
+     */
     public void startOne() {
         if (mMaxParticle == 1) {
 
@@ -172,7 +231,7 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
                 }
             });
         } else {
-            // calculate total number of requested emojis
+            // calculate total number
             int totalCount = 0;
             for (int count : mCountPerDrawable.values()) {
                 totalCount += count;
@@ -200,12 +259,18 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
     }
 
 
+    /**
+     * Start Emitting
+     */
     public void startEmitting() {
         stopEmitting();
         mTimer = new Timer();
         mTimer.schedule(new MyTimerTask(), 0, TIMER_TASK_INTERVAL);
     }
 
+    /**
+     * Stop Emitting
+     */
     public void stopEmitting() {
         if (mTimer != null) {
             mTimer.purge();
@@ -214,19 +279,30 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         }
     }
 
+    /**
+     * Add Decorator Initializer
+     * @param decorator
+     */
     public void addDecoratorInitializer(DecoratorInitializer decorator) {
         mInitializer.add(decorator);
     }
 
+    /**
+     * Add Decorator Behavior
+     * @param decorator
+     */
     public void addDecoratorBehavior(DecoratorBehavior decorator) {
         mBehavior.add(decorator);
     }
 
+    /**
+     * Timer to refresh the animation
+     */
     private class MyTimerTask extends TimerTask {
 
         private Handler mHandler;
 
-        public MyTimerTask() {
+        MyTimerTask() {
             super();
             Looper looper = Looper.getMainLooper();
             mHandler = new Handler(looper);
@@ -270,6 +346,11 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         }
     }
 
+    /**
+     * Run All Initializer
+     * @param p
+     * @return
+     */
     private Particle runInitializer(Particle p) {
         if (mInitializer.size() > 0) {
             for (DecoratorInitializer deco : mInitializer) {
@@ -281,6 +362,12 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         return p;
     }
 
+    /**
+     * Run All Behavior
+     * @param value
+     * @param p
+     * @return
+     */
     private Particle runBehavior(float value, Particle p) {
         if (mBehavior.size() > 0) {
             for (DecoratorBehavior deco : mBehavior) {
@@ -289,8 +376,6 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         }
         return p;
     }
-
-
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
@@ -329,24 +414,44 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         }
     }
 
+    /**
+     * Set Listener
+     * @param listener
+     */
     public void setOnAnimationDoneListener(OnAnimationDoneListener listener) {
         mListener = listener;
     }
 
+    /**
+     * Reset All Data
+     */
     private void reset() {
         mParticleCache.clear();
         mParticles.clear();
         mCountPerDrawable.clear();
     }
 
+    /**
+     * Setter Duration
+     * @param duration
+     */
     public void setDuration(int duration) {
         this.mDuration = duration;
     }
 
+    /**
+     * Setter Interpolator
+     * @param interpolator
+     */
     public void setInterpolator(Interpolator interpolator) {
         this.mInterpolator = interpolator;
     }
 
+    /**
+     * Setter Range Angle
+     * @param minAngle
+     * @param maxAngle
+     */
     public void setRangeAngle(int minAngle, int maxAngle) {
         if (minAngle < DEFAULT_ANGLE_MIN && minAngle > DEFAULT_ANGLE_MAX && minAngle > maxAngle
                 && maxAngle < DEFAULT_ANGLE_MIN && maxAngle > DEFAULT_ANGLE_MAX)
@@ -355,11 +460,18 @@ public class ParticleView extends View implements ValueAnimator.AnimatorUpdateLi
         mMinAngle = minAngle;
     }
 
+    /**
+     * Set Particle Max
+     * @param particleMax
+     */
     public void setParticleMax(int particleMax) {
         this.mMaxParticle = particleMax;
     }
 
 
+    /**
+     * Interface Call Back
+     */
     public interface OnAnimationDoneListener {
         void onAnimationDone();
     }

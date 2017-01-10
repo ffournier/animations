@@ -27,16 +27,17 @@ public class MainActivity extends AppCompatActivity {
         // start animation by drawables
         mParticleManager = new ParticleManager(this);
 
+
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startEplosion();
+                startExplosion();
             }
         });
 
    }
 
-    private void startEplosion() {
+    private void startExplosion() {
         mParticleManager.addAnchorView((ViewGroup) findViewById(android.R.id.content), mImageView, Gravity.CENTER)
                 .withScale(0.3f, 2f)
                 .withDistance(1000)

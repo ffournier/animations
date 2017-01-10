@@ -13,37 +13,69 @@ import com.animations.animations.lib.decorator.DecoratorBehavior;
 import com.animations.animations.lib.decorator.DecoratorInitializer;
 import com.animations.animations.lib.view.ParticleView;
 
+/**
+ * Define the manager of animations
+ */
 public class ParticleManager {
 
 
+    // declaration
     private ParticleView p;
     private Context mContext;
     private ViewGroup mParent;
 
 
+    /**
+     * Constructor
+     * @param context
+     */
     public ParticleManager(Context context) {
         super();
         mContext = context;
     }
 
+    /**
+     * Constructor
+     * @param context
+     * @param parent
+     * @param anchorView
+     */
     public ParticleManager(Context context, @NonNull ViewGroup parent, @NonNull  View anchorView) {
         this(context);
         mParent = parent;
         init(anchorView, Gravity.CENTER);
     }
 
+    /**
+     * add Anchor View
+     * @param parent
+     * @param anchorView
+     * @return
+     */
     public ParticleManager addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView) {
         mParent = parent;
         init(anchorView, Gravity.CENTER);
         return this;
     }
 
+    /**
+     * Add anchor view
+     * @param parent
+     * @param anchorView
+     * @param gravity
+     * @return
+     */
     public ParticleManager addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView, int gravity) {
         mParent = parent;
         init(anchorView, gravity);
         return this;
     }
 
+    /**
+     * init Particle Manager
+     * @param anchorView
+     * @param gravity
+     */
     private void init(View anchorView, int gravity)  {
         cleanAnimation();
 
@@ -87,59 +119,91 @@ public class ParticleManager {
 
     }
 
+    /**
+     * Test if it has gravity asked
+     * @param gravity
+     * @param gravityToCheck
+     * @param vertical
+     * @return
+     */
     private boolean hasGravity(int gravity, int gravityToCheck, boolean vertical) {
         int checked = vertical ? Gravity.VERTICAL_GRAVITY_MASK : Gravity.HORIZONTAL_GRAVITY_MASK;
         return (gravity & checked) == gravityToCheck;
     }
 
+    /**
+     * Add Scale
+     * @param minScale
+     * @param maxScale
+     * @return
+     */
     public ParticleManager withScale(float minScale, float maxScale) {
         if (p == null)
             throw new NullPointerException();
-
-        //p.setMinScale(1.0f);
-        //p.setMaxScale(3.0f);
 
         p.setMinScale(minScale);
         p.setMaxScale(maxScale);
         return this;
     }
 
+    /**
+     * Add Distance
+     * @param distance
+     * @return
+     */
     public ParticleManager withDistance(int distance) {
         if (p == null)
             throw new NullPointerException();
 
-        //p.setDistance(4000);
         p.setDistance(distance);
         return this;
     }
 
+    /**
+     * Add Particle Standard Size
+     * @param particleStandardSize
+     * @return
+     */
     public ParticleManager withParticleStandardSize(int particleStandardSize) {
         if (p == null)
             throw new NullPointerException();
 
-        //p.setDistance(4000);
         p.setParticleStandardSize(particleStandardSize);
         return this;
     }
 
+    /**
+     * Add Drawable Max
+     * @param maxCount
+     * @return
+     */
     public ParticleManager withDrawableMax(int maxCount) {
         if (p == null)
             throw new NullPointerException();
 
-        //p.setDistance(4000);
         p.setParticleMax(maxCount);
         return this;
     }
 
+    /**
+     * Add Drawable in List
+     * @param d
+     * @param count
+     * @return
+     */
     public ParticleManager addDrawable(Drawable d, int count) {
         if (p == null)
             throw new NullPointerException();
 
-        //p.setDistance(4000);
         p.addDrawable(d, count);
         return this;
     }
 
+    /**
+     * Add Duration
+     * @param duration
+     * @return
+     */
     public ParticleManager withDuration(int duration) {
         if (p == null)
             throw new NullPointerException();
@@ -147,6 +211,11 @@ public class ParticleManager {
         return this;
     }
 
+    /**
+     * Add Interpolator
+     * @param inter
+     * @return
+     */
     public ParticleManager withInterpolator(Interpolator inter) {
         if (p == null)
             throw new NullPointerException();
@@ -154,6 +223,11 @@ public class ParticleManager {
         return this;
     }
 
+    /**
+     * Add Range Angle
+     * @param angle
+     * @return
+     */
     public ParticleManager withRangeAngle(int angle) {
         if (p == null)
             throw new NullPointerException();
@@ -161,6 +235,12 @@ public class ParticleManager {
         return this;
     }
 
+    /**
+     * Add Range Angle
+     * @param minAngle
+     * @param maxAngle
+     * @return
+     */
     public ParticleManager withRangeAngle(int minAngle, int maxAngle) {
         if (p == null)
             throw new NullPointerException();
@@ -168,6 +248,12 @@ public class ParticleManager {
         return this;
     }
 
+    /**
+     * Add Velocity
+     * @param velocityX
+     * @param velocityY
+     * @return
+     */
     public ParticleManager withVelocity(int velocityX, int velocityY) {
         if (p == null)
             throw new NullPointerException();
@@ -175,67 +261,10 @@ public class ParticleManager {
         return this;
     }
 
-    /**public void startAnimatingExplosion(boolean emitting) {
-        if (p == null)
-            throw new NullPointerException();
-
-
-        p.setOnAnimationDoneListener(() -> cleanAnimation());
-        p.startAnimatingExplosion(emitting);
-    }
-
-    public void startAnimatingExplosion() {
-        startAnimatingScale(false);
-    }
-
-    public void startAnimatingRain(boolean emitting) {
-        if (p == null)
-            throw new NullPointerException();
-
-        p.setOnAnimationDoneListener(() -> cleanAnimation());
-        p.startAnimatingRain(emitting);
-    }
-
-    public void startAnimatingRain() {
-        startAnimatingScale(false);
-    }
-
-    public void startAnimatingScale(boolean emitting) {
-        if (p == null)
-            throw new NullPointerException();
-
-        p.setOnAnimationDoneListener(() -> cleanAnimation());
-        p.startAnimatingScale(emitting);
-    }
-
-    public void startAnimatingScale() {
-        startAnimatingScale(false);
-    }
-
-    public void startAnimatingTranslate(boolean emitting) {
-        if (p == null)
-            throw new NullPointerException();
-
-        p.setOnAnimationDoneListener(() -> cleanAnimation());
-        p.startAnimatingTranslate(emitting);
-    }
-
-    public void startAnimatingTranslate() {
-        startAnimatingTranslate(false);
-    }
-
-    public void startAnimatingTranslatePing(boolean emitting) {
-        if (p == null)
-            throw new NullPointerException();
-
-        p.setOnAnimationDoneListener(() -> cleanAnimation());
-        p.startAnimatingTranslatePing(emitting);
-    }
-
-    public void startAnimatingTranslatePing() {
-        startAnimatingTranslate(false);
-    }**/
-
+    /**
+     * Start Animation
+     * @param emitting
+     */
     public void start(boolean emitting) {
         if (p == null)
             throw new NullPointerException();
@@ -254,6 +283,9 @@ public class ParticleManager {
 
     }
 
+    /**
+     * Start Animation
+     */
     public void start() {
         start(false);
     }
@@ -265,6 +297,11 @@ public class ParticleManager {
         }
     }
 
+    /**
+     * Add Decorator Initializer
+     * @param decorator
+     * @return
+     */
     public ParticleManager addDecoratorInitializer(DecoratorInitializer decorator) {
         if (p == null)
             throw new NullPointerException();
@@ -273,11 +310,24 @@ public class ParticleManager {
         return this;
     }
 
+    /**
+     * Add Decorator Behavior
+     * @param decorator
+     * @return
+     */
     public ParticleManager addDecoratorBehavior(DecoratorBehavior decorator) {
         if (p == null)
             throw new NullPointerException();
 
         p.addDecoratorBehavior(decorator);
         return this;
+    }
+
+    /**
+     * Test if the init is done
+     * @return
+     */
+    public boolean hasAnchorView() {
+        return p != null && mParent != null && ViewGroupUtils.hasView(mParent, p);
     }
 }
