@@ -38,18 +38,22 @@ public class MainActivity extends AppCompatActivity {
    }
 
     private void startExplosion() {
-        mParticleManager.addAnchorView((ViewGroup) findViewById(android.R.id.content), mImageView, Gravity.CENTER)
-                .withScale(0.3f, 2f)
-                .withDistance(1000)
-                .withParticleStandardSize(48)
-                .withDuration(1000)
-                .withInterpolator(new LinearInterpolator())
-                .withRangeAngle(0, 360)
-                .withDrawableMax(60)
-                .addDecoratorInitializer(new ExplosionInitializer())
-                .addDecoratorBehavior(new ExplosionBehavior())
-                .addDrawable(getResources().getDrawable(android.R.drawable.ic_btn_speak_now), 30)
-                .addDrawable(getResources().getDrawable(android.R.drawable.ic_delete), 30)
-                .start(false);
+
+        // if we don't have the clean animations we have a problem of initialisation of particle, to se
+        if (!mParticleManager.hasAnchorView()) {
+            mParticleManager.addAnchorView((ViewGroup) findViewById(android.R.id.content), mImageView, Gravity.CENTER)
+                    .withScale(0.3f, 2f)
+                    .withDistance(1000)
+                    .withParticleStandardSize(48)
+                    .withDuration(1000)
+                    .withInterpolator(new LinearInterpolator())
+                    .withRangeAngle(0, 360)
+                    .withDrawableMax(60)
+                    .addDecoratorInitializer(new ExplosionInitializer())
+                    .addDecoratorBehavior(new ExplosionBehavior())
+                    .addDrawable(getResources().getDrawable(android.R.drawable.ic_btn_speak_now), 30)
+                    .addDrawable(getResources().getDrawable(android.R.drawable.ic_delete), 30);
+        }
+        mParticleManager.start(false);
     }
 }
