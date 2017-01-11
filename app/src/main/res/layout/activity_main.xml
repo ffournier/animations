@@ -11,10 +11,44 @@
     tools:context="com.animations.animations.MainActivity">
 
     <ImageView
-        android:id="@+id/image_view"
+        android:id="@+id/image_view_rain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:src="@android:drawable/ic_input_add" />
+
+    <ImageView
+        android:id="@+id/image_view_ping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:src="@android:drawable/ic_lock_power_off" />
+
+
+    <ImageView
+        android:id="@+id/image_view_explosion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@android:drawable/ic_delete" />
+
+    <ImageView
+        android:id="@+id/image_view_scaling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_view_explosion"
+        android:layout_centerHorizontal="true"
+        android:src="@android:drawable/ic_input_get" />
+
+
+    <ImageView
+        android:id="@+id/image_view_translate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/image_view_explosion"
+        android:layout_centerHorizontal="true"
+        android:src="@android:drawable/ic_btn_speak_now" />
 
 </RelativeLayout>

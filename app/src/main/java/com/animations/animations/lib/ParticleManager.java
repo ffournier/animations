@@ -2,6 +2,7 @@ package com.animations.animations.lib;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
@@ -11,7 +12,10 @@ import android.view.animation.Interpolator;
 
 import com.animations.animations.lib.decorator.DecoratorBehavior;
 import com.animations.animations.lib.decorator.DecoratorInitializer;
+import com.animations.animations.lib.particle.Particle;
 import com.animations.animations.lib.view.ParticleView;
+
+import java.util.HashMap;
 
 /**
  * Define the manager of animations
@@ -20,7 +24,7 @@ public class ParticleManager {
 
 
     // declaration
-    private ParticleView p;
+    private HashMap<String, ParticleView> pViews = new HashMap<>();
     private Context mContext;
     private ViewGroup mParent;
 
@@ -35,27 +39,14 @@ public class ParticleManager {
     }
 
     /**
-     * Constructor
-     * @param context
-     * @param parent
-     * @param anchorView
-     */
-    public ParticleManager(Context context, @NonNull ViewGroup parent, @NonNull  View anchorView) {
-        this(context);
-        mParent = parent;
-        init(anchorView, Gravity.CENTER);
-    }
-
-    /**
      * add Anchor View
      * @param parent
      * @param anchorView
      * @return
      */
-    public ParticleManager addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView) {
+    public ParticleView addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView, String tag) {
         mParent = parent;
-        init(anchorView, Gravity.CENTER);
-        return this;
+        return init(anchorView, Gravity.CENTER, tag);
     }
 
     /**
@@ -65,21 +56,38 @@ public class ParticleManager {
      * @param gravity
      * @return
      */
-    public ParticleManager addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView, int gravity) {
+    public ParticleView addAnchorView(@NonNull ViewGroup parent, @NonNull  View anchorView, int gravity, String tag) {
         mParent = parent;
-        init(anchorView, gravity);
-        return this;
+        return init(anchorView, gravity, tag);
     }
+
+    public ParticleView getLastParticleView() {
+        if (pViews != null && pViews.size() > 0)
+            return pViews.get(pViews.size() - 1);
+        return null;
+    }
+
+    public int getCountParticleView() {
+        if (pViews != null)
+            return pViews.size();
+        return -1;
+    }
+
+    public ParticleView getParticleView(String tag) {
+        if (pViews != null && pViews.size() > 0)
+            return pViews.get(tag);
+        return null;
+    }
+
 
     /**
      * init Particle Manager
      * @param anchorView
      * @param gravity
+     * @param tag
      */
-    private void init(View anchorView, int gravity)  {
-        cleanAnimation();
-
-        p = new ParticleView(mContext);
+    private ParticleView init(View anchorView, int gravity, String tag)  {
+        ParticleView p = new ParticleView(mContext);
         ViewGroupUtils.addView(mParent, p);
         p.setVisibility(View.VISIBLE);
         int[] mParentLocation = new int[2];
@@ -117,6 +125,10 @@ public class ParticleManager {
 
         p.setCenter(x, y);
 
+        pViews.put(tag, p);
+
+        return p;
+
     }
 
     /**
@@ -138,6 +150,30 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withScale(float minScale, float maxScale) {
+        ParticleView p = getLastParticleView();
+        return withScale(p, minScale, maxScale);
+    }
+
+    /**
+     * Add Scale
+     * @param tag
+     * @param minScale
+     * @param maxScale
+     * @return
+     */
+    public ParticleManager withScale(String tag, float minScale, float maxScale) {
+        ParticleView p = getParticleView(tag);
+        return withScale(p, minScale, maxScale);
+    }
+
+    /**
+     * Add Scale
+     * @param p
+     * @param minScale
+     * @param maxScale
+     * @return
+     */
+    public ParticleManager withScale(ParticleView p, float minScale, float maxScale) {
         if (p == null)
             throw new NullPointerException();
 
@@ -152,6 +188,28 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withDistance(int distance) {
+        ParticleView p = getLastParticleView();
+        return withDistance(p, distance);
+    }
+
+    /**
+     * Add Distance
+     * @param tag
+     * @param distance
+     * @return
+     */
+    public ParticleManager withDistance(String tag, int distance) {
+        ParticleView p = getParticleView(tag);
+        return withDistance(p, distance);
+    }
+
+    /**
+     * Add Distance
+     * @param p
+     * @param distance
+     * @return
+     */
+    public ParticleManager withDistance(ParticleView p, int distance) {
         if (p == null)
             throw new NullPointerException();
 
@@ -159,12 +217,36 @@ public class ParticleManager {
         return this;
     }
 
+
     /**
      * Add Particle Standard Size
      * @param particleStandardSize
      * @return
      */
     public ParticleManager withParticleStandardSize(int particleStandardSize) {
+        ParticleView p = getLastParticleView();
+        return withParticleStandardSize(p, particleStandardSize);
+    }
+
+    /**
+     * Add Particle Standard Size
+     * @param tag
+     * @param particleStandardSize
+     * @return
+     */
+    public ParticleManager withParticleStandardSize(String tag, int particleStandardSize) {
+        ParticleView p = getParticleView(tag);
+        return withParticleStandardSize(p, particleStandardSize);
+    }
+
+
+    /**
+     * Add Particle Standard Size
+     * @param p
+     * @param particleStandardSize
+     * @return
+     */
+    public ParticleManager withParticleStandardSize(ParticleView p, int particleStandardSize) {
         if (p == null)
             throw new NullPointerException();
 
@@ -178,6 +260,28 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withDrawableMax(int maxCount) {
+        ParticleView p = getLastParticleView();
+        return withDrawableMax(p, maxCount);
+    }
+
+    /**
+     * Add Drawable Max
+     * @param tag
+     * @param maxCount
+     * @return
+     */
+    public ParticleManager withDrawableMax(String tag, int maxCount) {
+        ParticleView p = getParticleView(tag);
+        return withDrawableMax(p, maxCount);
+    }
+
+    /**
+     * Add Drawable Max
+     * @param p
+     * @param maxCount
+     * @return
+     */
+    public ParticleManager withDrawableMax(ParticleView p,int maxCount) {
         if (p == null)
             throw new NullPointerException();
 
@@ -192,6 +296,30 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager addDrawable(Drawable d, int count) {
+        ParticleView p = getLastParticleView();
+        return addDrawable(p, d , count);
+    }
+
+    /**
+     * Add Drawable in List
+     * @param tag
+     * @param d
+     * @param count
+     * @return
+     */
+    public ParticleManager addDrawable(String tag, Drawable d, int count) {
+        ParticleView p = getParticleView(tag);
+        return addDrawable(p, d , count);
+    }
+
+    /**
+     * Add Drawable in List
+     * @param p
+     * @param d
+     * @param count
+     * @return
+     */
+    public ParticleManager addDrawable(ParticleView p, Drawable d, int count) {
         if (p == null)
             throw new NullPointerException();
 
@@ -205,18 +333,63 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withDuration(int duration) {
+        ParticleView p = getLastParticleView();
+        return withDuration(p, duration);
+    }
+
+    /**
+     * Add Duration
+     * @param tag
+     * @param duration
+     * @return
+     */
+    public ParticleManager withDuration(String tag, int duration) {
+        ParticleView p = getParticleView(tag);
+        return withDuration(p, duration);
+    }
+
+
+    /**
+     * Add Duration
+     * @param p
+     * @param duration
+     * @return
+     */
+    public ParticleManager withDuration(ParticleView p,int duration) {
         if (p == null)
             throw new NullPointerException();
         p.setDuration(duration);
         return this;
     }
-
     /**
      * Add Interpolator
      * @param inter
      * @return
      */
     public ParticleManager withInterpolator(Interpolator inter) {
+        ParticleView p = getLastParticleView();
+        return withInterpolator(p, inter);
+    }
+
+    /**
+     * Add Interpolator
+     * @param tag
+     * @param inter
+     * @return
+     */
+    public ParticleManager withInterpolator(String tag, Interpolator inter) {
+        ParticleView p = getParticleView(tag);
+        return withInterpolator(p, inter);
+    }
+
+
+    /**
+     * Add Interpolator
+     * @param p
+     * @param inter
+     * @return
+     */
+    public ParticleManager withInterpolator(ParticleView p, Interpolator inter) {
         if (p == null)
             throw new NullPointerException();
         p.setInterpolator(inter);
@@ -229,6 +402,28 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withRangeAngle(int angle) {
+        ParticleView p = getLastParticleView();
+        return withRangeAngle(p, angle);
+    }
+
+    /**
+     * Add Range Angle
+     * @param tag
+     * @param angle
+     * @return
+     */
+    public ParticleManager withRangeAngle(String tag, int angle) {
+        ParticleView p = getParticleView(tag);
+        return withRangeAngle(p, angle);
+    }
+
+    /**
+     * Add Range Angle
+     * @param p
+     * @param angle
+     * @return
+     */
+    public ParticleManager withRangeAngle(ParticleView p, int angle) {
         if (p == null)
             throw new NullPointerException();
         p.setRangeAngle(angle, angle);
@@ -242,6 +437,31 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withRangeAngle(int minAngle, int maxAngle) {
+        ParticleView p = getLastParticleView();
+        return withRangeAngle(p, minAngle, maxAngle);
+    }
+
+    /**
+     * Add Range Angle
+     * @param tag
+     * @param minAngle
+     * @param maxAngle
+     * @return
+     */
+    public ParticleManager withRangeAngle(String tag, int minAngle, int maxAngle) {
+        ParticleView p = getParticleView(tag);
+        return withRangeAngle(p, minAngle, maxAngle);
+    }
+
+
+    /**
+     * Add Range Angle
+     * @param p
+     * @param minAngle
+     * @param maxAngle
+     * @return
+     */
+    public ParticleManager withRangeAngle(ParticleView p, int minAngle, int maxAngle) {
         if (p == null)
             throw new NullPointerException();
         p.setRangeAngle(minAngle, maxAngle);
@@ -255,6 +475,31 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager withVelocity(int velocityX, int velocityY) {
+        ParticleView p = getLastParticleView();
+        return withVelocity(p, velocityX, velocityY);
+    }
+
+    /**
+     * Add Velocity
+     * @param tag
+     * @param velocityX
+     * @param velocityY
+     * @return
+     */
+    public ParticleManager withVelocity(String tag, int velocityX, int velocityY) {
+        ParticleView p = getParticleView(tag);
+        return withVelocity(p, velocityX, velocityY);
+    }
+
+
+    /**
+     * Add
+     * @param p
+     * @param velocityX
+     * @param velocityY
+     * @return
+     */
+    public ParticleManager withVelocity(ParticleView p, int velocityX, int velocityY) {
         if (p == null)
             throw new NullPointerException();
         p.setVelocity(velocityX, velocityY);
@@ -262,17 +507,37 @@ public class ParticleManager {
     }
 
     /**
+    * Start Animation
+    * @param emitting
+    */
+    public void start(boolean emitting) {
+        ParticleView p = getLastParticleView();
+        start(p, emitting);
+    }
+
+    /**
      * Start Animation
+     * @param tag
      * @param emitting
      */
-    public void start(boolean emitting) {
+    public void start(String tag, boolean emitting) {
+        ParticleView p = getParticleView(tag);
+        start(p, emitting);
+    }
+
+    /**
+     * Start Animation
+     * @param p
+     * @param emitting
+     */
+    public void start(final ParticleView p, boolean emitting) {
         if (p == null)
             throw new NullPointerException();
 
         p.setOnAnimationDoneListener(new ParticleView.OnAnimationDoneListener() {
             @Override
             public void onAnimationDone() {
-                cleanAnimation();
+                cleanAnimation(p);
             }
         });
 
@@ -284,16 +549,36 @@ public class ParticleManager {
     }
 
     /**
-     * Start Animation
+     * Clean one particleView
+     * @param p
      */
-    public void start() {
-        start(false);
+    public void cleanAnimation(final ParticleView p) {
+        if (p != null) {
+            if (pViews != null && pViews.size() > 0) {
+                pViews.remove(p);
+            }
+            p.stopEmitting();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ViewGroupUtils.removeView(p);
+                }
+            }, 100);
+
+        }
     }
 
-    public void cleanAnimation() {
-        if (p != null) {
-            p.stopEmitting();
-            ViewGroupUtils.removeView(p);
+    /**
+     * Clear All Animations
+     */
+    public void cleanAnimations() {
+        if (pViews != null && pViews.size() > 0) {
+            for (final ParticleView p : pViews.values()) {
+                p.stopEmitting();
+                ViewGroupUtils.removeView(p);
+            }
+            pViews.clear();
         }
     }
 
@@ -303,6 +588,28 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager addDecoratorInitializer(DecoratorInitializer decorator) {
+        ParticleView p = getLastParticleView();
+        return addDecoratorInitializer(p, decorator);
+    }
+
+    /**
+     * Add Decorator Initializer
+     * @param tag
+     * @param decorator
+     * @return
+     */
+    public ParticleManager addDecoratorInitializer(String tag, DecoratorInitializer decorator) {
+        ParticleView p = getParticleView(tag);
+        return addDecoratorInitializer(p, decorator);
+    }
+
+    /**
+     * Add Decorator Initializer
+     * @param p
+     * @param decorator
+     * @return
+     */
+    public ParticleManager addDecoratorInitializer(ParticleView p ,DecoratorInitializer decorator) {
         if (p == null)
             throw new NullPointerException();
 
@@ -316,6 +623,28 @@ public class ParticleManager {
      * @return
      */
     public ParticleManager addDecoratorBehavior(DecoratorBehavior decorator) {
+        ParticleView p = getLastParticleView();
+        return addDecoratorBehavior(p, decorator);
+    }
+
+    /**
+     * Add Decorator Behavior
+     * @param tag
+     * @param decorator
+     * @return
+     */
+    public ParticleManager addDecoratorBehavior(String tag, DecoratorBehavior decorator) {
+        ParticleView p = getParticleView(tag);
+        return addDecoratorBehavior(p, decorator);
+    }
+
+    /**
+     * Add Decorator Behavior
+     * @param p
+     * @param decorator
+     * @return
+     */
+    public ParticleManager addDecoratorBehavior(ParticleView p, DecoratorBehavior decorator) {
         if (p == null)
             throw new NullPointerException();
 
@@ -324,10 +653,25 @@ public class ParticleManager {
     }
 
     /**
-     * Test if the init is done
+     * Test if one init is done
      * @return
      */
     public boolean hasAnchorView() {
-        return p != null && mParent != null && ViewGroupUtils.hasView(mParent, p);
+        if(pViews != null && mParent != null && pViews.size() > 0) {
+            for (ParticleView p : pViews.values()) {
+                if(ViewGroupUtils.hasView(mParent, p))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Test if p has init done
+     * @param p
+     * @return
+     */
+    public boolean hasAnchorView(ParticleView p) {
+        return ViewGroupUtils.hasView(mParent, p);
     }
 }
